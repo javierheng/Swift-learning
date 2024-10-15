@@ -18,6 +18,8 @@ struct PlaceList: View {
     @State private var searchText = ""
     @State private var filterByInterested = false
     
+    @Namespace var namespace
+    
     private var predicate: Predicate<Place> {
         #Predicate<Place> {
             if !searchText.isEmpty && filterByInterested {
@@ -54,6 +56,13 @@ struct PlaceList: View {
                         }
                     }
                 }
+                .matchedTransitionSource(id: 1, in: namespace)
+                .swipeActions(edge: .leading) {
+                    Button(place.interested ? "Interested" : "Not Interested" ,systemImage: "star"){
+                        place.interested.toggle()
+                    }
+                    .tint(place.interested ? .yellow : .gray)
+                }
             }
             //标题
             .navigationTitle("Places")
@@ -67,6 +76,7 @@ struct PlaceList: View {
                     heading: 250,
                     pitch: 80
                 )))
+                .navigationTransition(.zoom(sourceID: 1, in: namespace))
             }
             //添加工具栏
             .toolbar {
